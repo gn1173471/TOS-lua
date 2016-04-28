@@ -5,16 +5,16 @@ These addons are intended to be used with [this](https://github.com/Excrulon/Tre
 
 These addons have not been officially approved but are not intrusive and can almost certainly be considered safe. See [here](https://forum.treeofsavior.com/t/stance-on-addons/141262/3) and [here](https://forum.treeofsavior.com/t/stance-on-addons/141262/24) about IMC's stance on addons.
 
-#### CabinetCommas
+#### cabinetCommas
 Format the silver values for the item listings in the market "sell" and "retrieve" tabs with thousands separators (commas) for readability. [preview](https://i.imgur.com/0jnNGxx.png)
 
-#### RemoveFPSCounter
+#### removeFPSCounter
 Hide the FPS counter.
 
-#### RemoveMapBackground
+#### removeMapBackground
 Remove the grey dimming background when the full map is opened (does not work in cities). [preview](https://i.imgur.com/IfcOlo9.jpg)
 
-#### RemovePetInfo
+#### removePetInfo
 Hide pet names and/or HP bars. If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-game slash commands will be available, however this is not a dependency for the core functionality of the addon.
 
 Available slash commands:
