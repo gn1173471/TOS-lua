@@ -15,7 +15,15 @@ Hide the FPS counter.
 Remove the grey dimming background when the full map is opened (does not work in cities). [preview](https://i.imgur.com/IfcOlo9.jpg)
 
 #### RemovePetInfo
-Hide pet names and/or HP bars. Settings are customizable at the top of the file.
+
+Available slash commands:
+
+- /pet -- Information about the addon.
+- /pet name [on/off] - Show/hide your pet name.
+- /pet hp [on/off] - Show/hide your pet HP.
+- /pet other [on/off] - Show/hide other pet names.
+
+You can edit the default settings at the top of the file.
 
 #### toggleDuels
 Allows you to toggle whether or not you will receive duel requests. If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-game slash commands will be available, however this is not a dependency for the core functionality of the addon.
