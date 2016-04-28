@@ -8,9 +8,6 @@ These addons have not been officially approved but are not intrusive and can alm
 #### CabinetCommas
 Format the silver values for the item listings in the market "sell" and "retrieve" tabs with thousands separators (commas) for readability. [preview](https://i.imgur.com/0jnNGxx.png)
 
-#### MinimapFogViewer
-Same thing as [Excrulon's map fog viewer](https://github.com/Excrulon/Tree-of-Savior-Lua-Mods/blob/master/addons/mapfogviewer/mapfogviewer.lua), but for the minimap. Credit for original code to Excrulon. Only works on minimap zoom setting x1.0.
-
 #### RemoveFPSCounter
 Hide the FPS counter.
 
