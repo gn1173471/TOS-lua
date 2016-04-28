@@ -1,8 +1,8 @@
-pet_settings = {
-	showMyPetName = 1;
-	showMyPetHP = 0;
-	showOtherPetNames = 0;
-};
+local settings = {};
+settings.showMyPetName = 1;
+settings.showMyPetHP = 0;
+settings.showOtherPetNames = 0;
+
 	
 function UPDATE_COMPANION_TITLE_HOOKED(frame, handle)
 	_G["UPDATE_COMPANION_TITLE_OLD"](frame, handle)
@@ -22,19 +22,68 @@ function UPDATE_COMPANION_TITLE_HOOKED(frame, handle)
 	
 	local othernameTxt = GET_CHILD_RECURSIVELY(frame, "othername");
 	
-	gauge_stamina:ShowWindow(pet_settings.showMyPetHP)
-	hp_stamina:ShowWindow(pet_settings.showMyPetHP)
-	pcinfo_bg_L:ShowWindow(pet_settings.showMyPetHP)
-	pcinfo_bg_R:ShowWindow(pet_settings.showMyPetHP)
-	mynameRtext:ShowWindow(pet_settings.showMyPetName)
+	gauge_stamina:ShowWindow(settings.showMyPetHP)
+	hp_stamina:ShowWindow(settings.showMyPetHP)
+	pcinfo_bg_L:ShowWindow(settings.showMyPetHP)
+	pcinfo_bg_R:ShowWindow(settings.showMyPetHP)
+	mynameRtext:ShowWindow(settings.showMyPetName)
 	
-	othernameTxt:ShowWindow(pet_settings.showOtherPetNames)
+	othernameTxt:ShowWindow(settings.showOtherPetNames)
 
 	frame:Invalidate()
 end
 
-local updateCompanionTitleHook = "UPDATE_COMPANION_TITLE";
 
+
+
+function processPetInfoCommand(words)
+	local cmd = table.remove(words,1);
+
+	if not cmd then
+		local msg = 'removePetInfo{nl}';
+		msg = msg .. '-----------{nl}';
+		msg = msg .. '/pet name [on/off]{nl}'
+		msg = msg .. 'Show/hide your pet name.{nl}';
+		msg = msg .. '-----------{nl}';
+		msg = msg .. '/pet hp [on/off]{nl}';
+		msg = msg .. 'Show/hide your pet HP.{nl}';
+		msg = msg .. '-----------{nl}';
+		msg = msg .. '/pet other [on/off]{nl}';
+		msg = msg .. 'Show/hide other pet names.{nl}';
+
+		return ui.MsgBox(msg,"","Nope");
+	
+	elseif cmd == 'name' then
+		cmd = table.remove(words,1);
+		if cmd == 'on' then
+			settings.showMyPetName = 1;
+		elseif cmd == 'off' then
+			settings.showMyPetName = 0;
+		end
+	
+	elseif cmd == 'hp' then
+		cmd = table.remove(words,1);
+		if cmd == 'on' then
+			settings.showMyPetHP = 1;
+		elseif cmd == 'off' then
+			settings.showMyPetHP = 0;
+		end
+	
+	elseif cmd == 'other' then
+		cmd = table.remove(words,1);
+		if cmd == 'on' then
+			settings.showOtherPetNames =  1;
+		elseif cmd == 'off' then
+			settings.showOtherPetNames = 0;
+		end
+		
+	else 
+		cwAPI.util.log('[removePetInfo] Invalid input. Type "/pet" for help.');
+	end
+
+end
+
+local updateCompanionTitleHook = "UPDATE_COMPANION_TITLE";
 if _G["UPDATE_COMPANION_TITLE_OLD"] == nil then
 	_G["UPDATE_COMPANION_TITLE_OLD"] = _G[updateCompanionTitleHook];
 	_G[updateCompanionTitleHook] = UPDATE_COMPANION_TITLE_HOOKED;
@@ -42,4 +91,13 @@ else
 	_G[updateCompanionTitleHook] = UPDATE_COMPANION_TITLE_HOOKED;
 end
 
-ui.SysMsg("Pet info settings loaded");
+if (not cwAPI) then
+	ui.SysMsg('[removePetInfo] could not find cwAPI, you will not be able to change settings in-game.{nl}');
+	return false;
+else
+	_G['ADDON_LOADER']['removepetinfo'] = function() 
+		cwAPI.commands.register('/pet',processPetInfoCommand);
+		cwAPI.util.log('[removePetInfo:help] /pet{nl}');
+		return true;
+	end
+end 
