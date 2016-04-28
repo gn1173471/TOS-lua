@@ -1,5 +1,5 @@
 # TOS-lua
-These addons are intended to be used with [this](https://github.com/Excrulon/Tree-of-Savior-Lua-Mods) addon loader format.
+These addons are intended to be used with [this](https://github.com/Excrulon/Tree-of-Savior-Lua-Mods) or [this](https://github.com/fiote/treeofsavior-addons) addon loader format.
 
 [![Addon Safe](https://cdn.rawgit.com/lubien/awesome-tos/master/badges/addon-safe.svg)](https://github.com/lubien/awesome-tos#addons-badges)  [![Addon Status Unknown](https://cdn.rawgit.com/lubien/awesome-tos/master/badges/addon-unknown.svg)](https://github.com/lubien/awesome-tos#addons-badges) 
 
@@ -16,3 +16,15 @@ Remove the grey dimming background when the full map is opened (does not work in
 
 #### RemovePetInfo
 Hide pet names and/or HP bars. Settings are customizable at the top of the file.
+
+#### toggleDuels
+Allows you to toggle whether or not you will receive duel requests. If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-game slash commands will be available, however this is not a dependency for the core functionality of the addon.
+
+Available slash commands:
+
+- /duels -- Quick toggle duels on/off.
+- /duels [on/off] -- Set duel requests on/off. "On" means that you will be able to receive duel requests. (Default: on)
+- /duels notify -- Toggle whether you will be notified in chat when a duel request is blocked, e.g. "Blocked duel request from Mie" (Default: on)
+- /duels help -- Information about the addon.
+
+By default, duels are set to "on", meaning you will recieve duel requests. If you would like to edit the default settings, you can do so at the top of the file. It is set this way to prevent inconvenience in the case that somebody unwittingly installs the addon.
