@@ -20,9 +20,9 @@ Hide pet names and/or HP bars. If you have [cwAPI](https://github.com/fiote/tree
 Available slash commands:
 
 - /pet -- Information about the addon.
-- /pet name [on/off] - Show/hide your pet name.
-- /pet hp [on/off] - Show/hide your pet HP.
-- /pet other [on/off] - Show/hide other pet names.
+- /pet name [on/off] - Show/hide your pet name. (Default: on)
+- /pet hp [on/off] - Show/hide your pet HP. (Default: off)
+- /pet other [on/off] - Show/hide other pet names. (Default: off)
 
 You can edit the default settings at the top of the file.
 
