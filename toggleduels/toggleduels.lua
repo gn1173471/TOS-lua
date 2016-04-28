@@ -13,7 +13,8 @@ end
 
 function processDuelsCommand(words)
 	local cmd = table.remove(words,1);
-
+	local msg = '';
+	
 	if not cmd then
 		if settings.duels == true then
 			settings.duels = false;
@@ -33,7 +34,7 @@ function processDuelsCommand(words)
 		msg = duelStatusString();
 	
 	elseif cmd == 'help' then
-		local msg = 'toggleDuels{nl}';
+		msg = 'toggleDuels{nl}';
 		msg = msg .. '-----------{nl}';
 		msg = msg .. 'Usage: /duels [on/off/notify/help]{nl}'
 		msg = msg .. 'Typing "/duels" without an argument will toggle duels on/off quickly.{nl}';
