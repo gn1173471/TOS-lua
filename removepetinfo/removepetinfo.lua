@@ -83,13 +83,7 @@ function processPetInfoCommand(words)
 
 end
 
-local updateCompanionTitleHook = "UPDATE_COMPANION_TITLE";
-if _G["UPDATE_COMPANION_TITLE_OLD"] == nil then
-	_G["UPDATE_COMPANION_TITLE_OLD"] = _G[updateCompanionTitleHook];
-	_G[updateCompanionTitleHook] = UPDATE_COMPANION_TITLE_HOOKED;
-else
-	_G[updateCompanionTitleHook] = UPDATE_COMPANION_TITLE_HOOKED;
-end
+SETUP_HOOK(UPDATE_COMPANION_TITLE_HOOKED, "UPDATE_COMPANION_TITLE");
 
 if (not cwAPI) then
 	ui.SysMsg('[removePetInfo] could not find cwAPI, you will not be able to change settings in-game.{nl}');

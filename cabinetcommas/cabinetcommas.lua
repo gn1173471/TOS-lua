@@ -15,16 +15,6 @@ function ON_CABINET_ITEM_LIST_HOOKED(frame)
 end
 
 
-local onCabinetItemListHook = "ON_CABINET_ITEM_LIST";
-if _G["ON_CABINET_ITEM_LIST_OLD"] == nil then
-	_G["ON_CABINET_ITEM_LIST_OLD"] = _G[onCabinetItemListHook];
-	_G[onCabinetItemListHook] = ON_CABINET_ITEM_LIST_HOOKED;
-else
-	_G[onCabinetItemListHook] = ON_CABINET_ITEM_LIST_HOOKED;
-end
-
-
-
 function ON_MARKET_SELL_LIST_HOOKED(frame, msg, argStr, argNum)
 	_G["ON_MARKET_SELL_LIST_OLD"](frame, msg, argStr, argNum);
 	
@@ -46,11 +36,5 @@ function ON_MARKET_SELL_LIST_HOOKED(frame, msg, argStr, argNum)
 	end
 end
 
-local onMarketSellListHook = "ON_MARKET_SELL_LIST";
-if _G["ON_MARKET_SELL_LIST_OLD"] == nil then
-	_G["ON_MARKET_SELL_LIST_OLD"] = _G[onMarketSellListHook];
-	_G[onMarketSellListHook] = ON_MARKET_SELL_LIST_HOOKED;
-else
-	_G[onMarketSellListHook] = ON_MARKET_SELL_LIST_HOOKED;
-end
-
+SETUP_HOOK(ON_MARKET_SELL_LIST_HOOKED, "ON_MARKET_SELL_LIST");
+SETUP_HOOK(ON_CABINET_ITEM_LIST_HOOKED, "ON_CABINET_ITEM_LIST");

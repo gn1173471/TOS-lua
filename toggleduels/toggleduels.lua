@@ -71,12 +71,7 @@ function duelStatusString()
 	return statusString;
 end
 
-if _G["ASKED_FRIENDLY_FIGHT_OLD"] == nil then
-	_G["ASKED_FRIENDLY_FIGHT_OLD"] = _G["ASKED_FRIENDLY_FIGHT"];
-	_G["ASKED_FRIENDLY_FIGHT"] = ASKED_FRIENDLY_FIGHT_HOOKED;
-else
-	_G["ASKED_FRIENDLY_FIGHT"] = ASKED_FRIENDLY_FIGHT_HOOKED;
-end
+SETUP_HOOK(ASKED_FRIENDLY_FIGHT_HOOKED, "ASKED_FRIENDLY_FIGHT");
 
 if (not cwAPI) then
 	ui.SysMsg('[toggleDuels] could not find cwAPI, you will not be able to change settings in-game.{nl}' .. duelStatusString());

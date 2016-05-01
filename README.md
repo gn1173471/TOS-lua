@@ -1,5 +1,5 @@
 # TOS-lua
-These addons are intended to be used with [this](https://github.com/Excrulon/Tree-of-Savior-Lua-Mods) or [this](https://github.com/fiote/treeofsavior-addons) addon loader format.
+These addons are intended to be used with [this](https://github.com/Excrulon/Tree-of-Savior-Lua-Mods) or [this](https://github.com/fiote/treeofsavior-addons) addon loader format. [utility.lua](https://github.com/Excrulon/Tree-of-Savior-Lua-Mods/blob/master/addons/utility.lua) is a dependency.
 
 [![Addon Safe](https://cdn.rawgit.com/lubien/awesome-tos/master/badges/addon-safe.svg)](https://github.com/lubien/awesome-tos#addons-badges)  [![Addon Status Unknown](https://cdn.rawgit.com/lubien/awesome-tos/master/badges/addon-unknown.svg)](https://github.com/lubien/awesome-tos#addons-badges) 
 
