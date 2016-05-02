@@ -26,11 +26,6 @@ Available slash commands:
 
 You can edit the default settings at the top of the file.
 
-#### reportBlock
-Reporting a player also blocks them. You may report someone from the chat's context menu.
-
-
-
 #### toggleDuels
 Allows you to toggle whether or not you will receive duel requests. If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-game slash commands will be available, however this is not a dependency for the core functionality of the addon.
 
