@@ -3,7 +3,7 @@ function REPORT_AUTOBOT_MSGBOX_HOOKED(teamName)
 	local msgBoxString = 'Do you want to block and report ' .. teamName;
 	msgBoxString = msgBoxString .. '?';
 	local yesScp = string.format("REPORT_BLOCK_AUTOBOT( \"%s\" )", teamName);
-	
+
 	ui.MsgBox(msgBoxString, yesScp, "None");	
 end
 
@@ -33,7 +33,7 @@ function CHAT_RBTN_POPUP_HOOKED(frame, chatCtrl)
 	local strRequestAddFriendScp = string.format("friends.RequestRegister('%s')", targetName);
 	ui.AddContextMenuItem(context, ScpArgMsg("ReqAddFriend"), strRequestAddFriendScp);
 	
-	local characterInfoScp = string.format("party.ReqMemberDetailInfo('%s')", targetName)
+	local characterInfoScp = string.format("PC_COMPARE('%s')", targetName)
 	ui.AddContextMenuItem(context, ScpArgMsg("ShowInfomation"), characterInfoScp);
 	
 	local partyinviteScp = string.format("PARTY_INVITE(\"%s\")", targetName);
@@ -50,22 +50,13 @@ function CHAT_RBTN_POPUP_HOOKED(frame, chatCtrl)
 
 end
 
-function SHOW_PC_COMPARE_HOOKED(cid)
-	_G['SHOW_PC_COMPARE_OLD'](cid);
+function PC_COMPARE(familyName)
 	pcCompareFirstPass = true;
+	party.ReqMemberDetailInfo(familyName);
 end
 
 function REQUEST_LIKE_STATE_HOOKED(familyName)
 	if pcCompareFirstPass == true then
-		local frame = ui.GetFrame("compare");
-		local likeCheck = GET_CHILD_RECURSIVELY(frame,"likeCheck")
-		
-		if session.likeit.AmILikeYou(familyName) == false then
-			likeCheck:SetCheck(0);
-		else
-			likeCheck:SetCheck(1);
-		end
-		
 		pcCompareFirstPass = false;
 		return;
 	end
@@ -74,5 +65,5 @@ end
 
 SETUP_HOOK(REPORT_AUTOBOT_MSGBOX_HOOKED, "REPORT_AUTOBOT_MSGBOX");
 SETUP_HOOK(CHAT_RBTN_POPUP_HOOKED, "CHAT_RBTN_POPUP");
-SETUP_HOOK(SHOW_PC_COMPARE_HOOKED, "SHOW_PC_COMPARE");
+SETUP_HOOK(PC_COMPARE, "OPEN_PARTY_MEMBER_INFO");
 SETUP_HOOK(REQUEST_LIKE_STATE_HOOKED, "REQUEST_LIKE_STATE");
