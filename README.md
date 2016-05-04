@@ -8,6 +8,9 @@ These addons have not been officially approved but are not intrusive and can alm
 #### cabinetCommas
 Format the silver values for the item listings in the market "sell" and "retrieve" tabs with thousands separators (commas) for readability. [preview](https://i.imgur.com/0jnNGxx.png)
 
+#### fixChatContextMenu
+Add the option to report a bot and view character information to the chat's context menu. As a bonus, fix the bug that will automatically like someone when you open their character information. [preview](https://i.imgur.com/qqIGBuw.png)
+
 #### removeFPSCounter
 Hide the FPS counter.
 
