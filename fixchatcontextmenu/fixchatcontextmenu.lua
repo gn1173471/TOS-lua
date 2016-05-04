@@ -57,6 +57,15 @@ end
 
 function REQUEST_LIKE_STATE_HOOKED(familyName)
 	if pcCompareFirstPass == true then
+		local frame = ui.GetFrame("compare");
+		local likeCheck = GET_CHILD_RECURSIVELY(frame,"likeCheck")
+		
+		if session.likeit.AmILikeYou(familyName) == false then
+			likeCheck:SetCheck(0);
+		else
+			likeCheck:SetCheck(1);
+		end
+		
 		pcCompareFirstPass = false;
 		return;
 	end
