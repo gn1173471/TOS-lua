@@ -5,6 +5,8 @@ These addons are intended to be used with [this](https://github.com/Excrulon/Tre
 
 These addons have not been officially approved but are not intrusive and can almost certainly be considered safe. See [here](https://forum.treeofsavior.com/t/stance-on-addons/141262/3) and [here](https://forum.treeofsavior.com/t/stance-on-addons/141262/24) about IMC's stance on addons.
 
+When installing, make sure that the .ipf files in /data have a unicode character in them, or they will not work. For example: ⚗classicchat.ipf
+
 #### cabinetCommas
 Format the silver values for the item listings in the market "sell" and "retrieve" tabs with thousands separators (commas) for readability. [preview](https://i.imgur.com/0jnNGxx.png)
 
