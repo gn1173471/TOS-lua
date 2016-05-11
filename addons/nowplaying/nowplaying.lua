@@ -16,9 +16,9 @@ frame:ShowWindow(_G["ADDONS"]["NOWPLAYING"]["showFrame"] or settings.showFrame);
 
 local currentTrack = '';
 function NOWPLAYING_UPDATE_FRAME()
-	if settings.onlyNotification == 1 and currentTrack ~= NOWPLAYING_GET_INFO() and settings.showFrame == 1 then
-		currentTrack = NOWPLAYING_GET_INFO();
+	if settings.onlyNotification == 1 and currentTrack ~= NOWPLAYING_GET_INFO() and _G["ADDONS"]["NOWPLAYING"]["showFrame"] == 1 then
 		frame:SetDuration(settings.notifyDuration);
+		currentTrack = NOWPLAYING_GET_INFO();
 	end
 	frame:SetPos(chatFrame:GetX()+2, chatFrame:GetY()-frame:GetHeight());
 	textBox:SetTextByKey("text", NOWPLAYING_GET_INFO());
@@ -49,11 +49,11 @@ function processNowPlayingCommand(words)
 	local cmd = table.remove(words,1);
 	if cmd == 'hide' then
 		_G["ADDONS"]["NOWPLAYING"]["showFrame"] = 0;
-		ui.CloseFrame('nowplaying');
+		frame:ShowWindow(0);
 		return;
 	elseif cmd == 'show' then
 		_G["ADDONS"]["NOWPLAYING"]["showFrame"] = 1;
-		ui.OpenFrame('nowplaying');
+		frame:ShowWindow(1);
 		return;
 	end
 	local msg = '';
