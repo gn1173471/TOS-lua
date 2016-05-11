@@ -8,11 +8,16 @@ These addons have not been officially approved but are not intrusive and can alm
 #### cabinetCommas
 Format the silver values for the item listings in the market "sell" and "retrieve" tabs with thousands separators (commas) for readability. [preview](https://i.imgur.com/0jnNGxx.png)
 
+#### fixFontSizeSlider
+Fix the font size slider in the chat options to dynamically update the font size in the chat frame.
+
 #### removeFPSCounter
 Hide the FPS counter.
+(updated to use event-based ipf format)
 
 #### removeMapBackground
 Remove the grey dimming background when the full map is opened. [preview](https://i.imgur.com/IfcOlo9.jpg)
+(updated to use event-based ipf format)
 
 #### removePetInfo
 Hide pet names and/or HP bars. If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-game slash commands will be available, however this is not a dependency for the core functionality of the addon.
