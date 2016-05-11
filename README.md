@@ -33,7 +33,7 @@ Fix the font size slider in the chat options to dynamically update the font size
 #### nowPlaying
 Add text above the chat window to show the currently playing BGM. [preview](https://i.imgur.com/tJGwNUr.png)
 
-You can optionally disable this text altogether, or enable it as a notification for a set duration once the BGM changes. See the top of the file to change these settings.
+You can optionally disable this text altogether, or enable it as a notification for a set duration once the BGM changes. See the top of the file to change these settings. The default setting is notification style with a 15 second duration.
 
 If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-game slash commands will be available, however this is not a dependency for the core functionality of the addon.
 
