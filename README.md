@@ -8,15 +8,34 @@ These addons have not been officially approved but are not intrusive and can alm
 #### cabinetCommas
 Format the silver values for the item listings in the market "sell" and "retrieve" tabs with thousands separators (commas) for readability. [preview](https://i.imgur.com/0jnNGxx.png)
 
+#### classicChat
+Changes the chat to be more similar to a classic MMO chat frame. [preview](https://i.imgur.com/Z3GgKT7.png)
+
+Features:
+
+- Different text colors for each chat channel.
+- Colored item and recipe links based on rarity.
+- Whisper notification sounds. (Disabled by default)
+- Optional time stamps.
+- More
+
+These settings can and should be customized at the top of the lua file. Hex color codes are used.
+
+Upon installing this addon, I would recommend that you readjust your [chat's transparency setting](https://i.imgur.com/WCevi1v.png) as the default background skin for the text frame will be replaced with a darker one to allow a greater range of transparency.
+
+This addon will conflict with LKChat, they cannot be used together.
+
 #### fixFontSizeSlider
 Fix the font size slider in the chat options to dynamically update the font size in the chat frame.
 
 #### removeFPSCounter
 Hide the FPS counter.
+
 (updated to use event-based ipf format)
 
 #### removeMapBackground
 Remove the grey dimming background when the full map is opened. [preview](https://i.imgur.com/IfcOlo9.jpg)
+
 (updated to use event-based ipf format)
 
 #### removePetInfo
