@@ -1,11 +1,12 @@
-local nowPlaying = _G["ADDONS"]["NOWPLAYING"];
 local settings = {
 	showFrame = 1; 			-- Default enable or disable onscreen text. This will also disable notifications.
 	onlyNotification = 1;	-- Do you want to only show text as a temporary notification after bgm changes?
 	notifyDuration = 15;	-- Duration of the notification text
 	chatMessage = 0;		-- Chat message for each new bgm?
 }
+
 function NOWPLAYING_UPDATE_FRAME()
+	local nowPlaying = _G["ADDONS"]["NOWPLAYING"];
 	if nowPlaying.musicInst ~= imcSound.GetPlayingMusicInst() then
 		nowPlaying.musicInst = imcSound.GetPlayingMusicInst();
 		local musicFileName = nowPlaying.musicInst:GetFileName();
@@ -41,7 +42,7 @@ end
 function processNowPlayingCommand(words)
 	local cmd = table.remove(words,1);
 	if cmd == 'hide' then
-		nowPlaying.showFrame= 0;
+		nowPlaying.showFrame = 0;
 		nowPlaying.frame:ShowWindow(0);
 		return;
 	elseif cmd == 'show' then
@@ -57,7 +58,7 @@ function processNowPlayingCommand(words)
 		end
 		return;
 	elseif cmd == 'help' then
-		local msg = 'removePetInfo{nl}';
+		local msg = 'nowPlaying{nl}';
 		msg = msg .. '-----------{nl}';
 		msg = msg .. '/music{nl}'
 		msg = msg .. 'Show the current track name.{nl}';
@@ -83,18 +84,7 @@ function processNowPlayingCommand(words)
 	cwAPI.util.log(msg);
 end
 
-if (not cwAPI) then
-	return false;
-else
-	_G['ADDON_LOADER']['nowplaying'] = function() 
-		cwAPI.commands.register('/nowplaying',processNowPlayingCommand);
-		cwAPI.commands.register('/np',processNowPlayingCommand);
-		cwAPI.commands.register('/music',processNowPlayingCommand);
-		cwAPI.util.log('[nowPlaying:help] /music [show/hide]');
-		return true;
-	end
-end 
-
+local nowPlaying = _G["ADDONS"]["NOWPLAYING"];
 nowPlaying.chatFrame = ui.GetFrame("chatframe");
 nowPlaying.frame = ui.GetFrame("nowplaying");
 nowPlaying.textBox = GET_CHILD(nowPlaying.frame, "textbox");
@@ -107,6 +97,19 @@ if not nowPlaying.loaded then
 		nowPlaying.frame:SetDuration(settings.notifyDuration);
 	end
 	
-	nowPlaying["addon"]:RegisterMsg('FPS_UPDATE', 'NOWPLAYING_UPDATE_FRAME');
 	nowPlaying.loaded = true;
 end
+
+nowPlaying["addon"]:RegisterMsg('FPS_UPDATE', 'NOWPLAYING_UPDATE_FRAME');
+
+if (not cwAPI) then
+	return false;
+else
+	_G['ADDON_LOADER']['nowplaying'] = function() 
+		cwAPI.commands.register('/nowplaying',processNowPlayingCommand);
+		cwAPI.commands.register('/np',processNowPlayingCommand);
+		cwAPI.commands.register('/music',processNowPlayingCommand);
+		cwAPI.util.log('[nowPlaying:help] /music [show/hide]');
+		return true;
+	end
+end 
