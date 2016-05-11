@@ -1,5 +1,7 @@
 local settings = {
-	showFrame = 1; -- Default enable or disable onscreen text.
+	showFrame = 1; 			-- Default enable or disable onscreen text. This will also disable notifications.
+	onlyNotification = 1;	-- Do you want to only show text as a temporary notification after bgm changes?
+	notifyDuration = 15;		-- Duration of the notification text
 }
 
 local addon = _G["ADDONS"]["NOWPLAYING"]["addon"];
@@ -12,7 +14,12 @@ local textBox = GET_CHILD(frame, "textbox");
 frame:ShowWindow(_G["ADDONS"]["NOWPLAYING"]["showFrame"] or settings.showFrame);
 
 
+local currentTrack = '';
 function NOWPLAYING_UPDATE_FRAME()
+	if settings.onlyNotification == 1 and currentTrack ~= NOWPLAYING_GET_INFO() and settings.showFrame == 1 then
+		currentTrack = NOWPLAYING_GET_INFO();
+		frame:SetDuration(settings.notifyDuration);
+	end
 	frame:SetPos(chatFrame:GetX()+2, chatFrame:GetY()-frame:GetHeight());
 	textBox:SetTextByKey("text", NOWPLAYING_GET_INFO());
 end

@@ -31,7 +31,9 @@ This addon will conflict with LKChat, they cannot be used together.
 Fix the font size slider in the chat options to dynamically update the font size in the chat frame.
 
 #### nowPlaying
-Add text above the chat window to show the currently playing BGM. [preview](https://i.imgur.com/tJGwNUr.png) (You can disable this by default if you choose, see top of file) 
+Add text above the chat window to show the currently playing BGM. [preview](https://i.imgur.com/tJGwNUr.png)
+
+You can optionally disable this text altogether, or enable it as a notification for a set duration once the BGM changes. See the top of the file to change these settings.
 
 If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-game slash commands will be available, however this is not a dependency for the core functionality of the addon.
 
