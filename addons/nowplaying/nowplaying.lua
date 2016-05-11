@@ -1,63 +1,82 @@
+local nowPlaying = _G["ADDONS"]["NOWPLAYING"];
 local settings = {
 	showFrame = 1; 			-- Default enable or disable onscreen text. This will also disable notifications.
 	onlyNotification = 1;	-- Do you want to only show text as a temporary notification after bgm changes?
-	notifyDuration = 15;		-- Duration of the notification text
+	notifyDuration = 15;	-- Duration of the notification text
+	chatMessage = 0;		-- Chat message for each new bgm?
 }
-
-local addon = _G["ADDONS"]["NOWPLAYING"]["addon"];
-addon:RegisterMsg('FPS_UPDATE', 'NOWPLAYING_UPDATE_FRAME');
-
-local chatFrame = ui.GetFrame("chatframe");
-local frame = ui.GetFrame("nowplaying");
-local textBox = GET_CHILD(frame, "textbox");
-
-frame:ShowWindow(_G["ADDONS"]["NOWPLAYING"]["showFrame"] or settings.showFrame);
-
-
-local currentTrack = '';
 function NOWPLAYING_UPDATE_FRAME()
-	if settings.onlyNotification == 1 and currentTrack ~= NOWPLAYING_GET_INFO() and _G["ADDONS"]["NOWPLAYING"]["showFrame"] == 1 then
-		frame:SetDuration(settings.notifyDuration);
-		currentTrack = NOWPLAYING_GET_INFO();
-	end
-	frame:SetPos(chatFrame:GetX()+2, chatFrame:GetY()-frame:GetHeight());
-	textBox:SetTextByKey("text", NOWPLAYING_GET_INFO());
-end
-
-function NOWPLAYING_GET_INFO()
-	local musicInst = imcSound.GetPlayingMusicInst();
-	local musicFileName = musicInst:GetFileName();
-	for word in string.gmatch(musicFileName, "bgm\(.-)mp3") do
-		local musicArtist = string.match(musicFileName, "tos_(.-)_");
-		local musicTitle = string.match(musicFileName, "tos_.-_(.-)%.mp3");
-		musicTitle = string.gsub(musicTitle, '_', ' ');
-		
-		if musicArtist == "Tree" then
-			musicTitle = "Tree of Savior";
-			musicArtist = "Cinenote; Sevin";
+	if nowPlaying.musicInst ~= imcSound.GetPlayingMusicInst() then
+		nowPlaying.musicInst = imcSound.GetPlayingMusicInst();
+		local musicFileName = nowPlaying.musicInst:GetFileName();
+		for word in string.gmatch(musicFileName, "bgm\(.-)mp3") do
+			local musicArtist = string.match(musicFileName, "tos_(.-)_");
+			local musicTitle = string.match(musicFileName, "tos_.-_(.-)%.mp3");
+			musicTitle = string.gsub(musicTitle, '_', ' ');
+			
+			if musicArtist == "Tree" then
+				musicTitle = "Tree of Savior";
+				musicArtist = "Cinenote; Sevin";
+			end
+			if musicArtist == "SFA" then
+				musicArtist = "S.F.A"
+			end
+			
+			nowPlaying.currentTrack = string.format('Now playing: %s - %s', musicArtist, musicTitle);
+			nowPlaying.frame:ShowWindow(nowPlaying.settings.showFrame);
+			if nowPlaying.settings.onlyNotification == 1 then
+				nowPlaying.frame:SetDuration(nowPlaying.settings.notifyDuration);
+			end
+			
+			if nowPlaying.settings.chatMessage == 1 then
+				CHAT_SYSTEM(nowPlaying.currentTrack);  
+			end
+			
+			nowPlaying.frame:SetPos(nowPlaying.chatFrame:GetX()+2, nowPlaying.chatFrame:GetY()-nowPlaying.frame:GetHeight());
+			nowPlaying.textBox:SetTextByKey("text", nowPlaying.currentTrack);
 		end
-		if musicArtist == "SFA" then
-			musicArtist = "S.F.A"
-		end
-		
-		return string.format('Now playing: %s - %s', musicArtist, musicTitle);
 	end
-	return "";
 end
 
 function processNowPlayingCommand(words)
 	local cmd = table.remove(words,1);
 	if cmd == 'hide' then
-		_G["ADDONS"]["NOWPLAYING"]["showFrame"] = 0;
-		frame:ShowWindow(0);
+		nowPlaying.showFrame= 0;
+		nowPlaying.frame:ShowWindow(0);
 		return;
 	elseif cmd == 'show' then
-		_G["ADDONS"]["NOWPLAYING"]["showFrame"] = 1;
-		frame:ShowWindow(1);
+		nowPlaying.showFrame = 1;
+		nowPlaying.frame:ShowWindow(1);
 		return;
+	elseif cmd == 'chat' then
+		cmd = table.remove(words,1);
+		if cmd == 'show' then
+			nowPlaying.settings.chatMessage = 1;
+		elseif cmd == 'hide' then
+			nowPlaying.settings.chatMessage = 0;
+		end
+		return;
+	elseif cmd == 'help' then
+		local msg = 'removePetInfo{nl}';
+		msg = msg .. '-----------{nl}';
+		msg = msg .. '/music{nl}'
+		msg = msg .. 'Show the current track name.{nl}';
+		msg = msg .. '-----------{nl}';
+		msg = msg .. '/music [show/hide]{nl}';
+		msg = msg .. 'Show/hide the yellow text above chat.{nl}';
+		msg = msg .. '-----------{nl}';
+		msg = msg .. '/music chat [show/hide]{nl}';
+		msg = msg .. 'Show/hide chat messages on new track.{nl}';
+		msg = msg .. '-----------{nl}';
+		msg = msg .. '/music help{nl}';
+		msg = msg .. 'Shows this window.{nl}';
+		msg = msg .. '-----------{nl}';
+		msg = msg .. '/music can also be used as /np or /nowplaying';
+
+		return ui.MsgBox(msg,"","Nope");
 	end
 	local msg = '';
-	msg = NOWPLAYING_GET_INFO();
+	msg = nowPlaying.currentTrack;
 	if msg == '' then
 		msg = 'Now Playing: None';
 	end
@@ -75,3 +94,19 @@ else
 		return true;
 	end
 end 
+
+nowPlaying.chatFrame = ui.GetFrame("chatframe");
+nowPlaying.frame = ui.GetFrame("nowplaying");
+nowPlaying.textBox = GET_CHILD(nowPlaying.frame, "textbox");
+
+if not nowPlaying.loaded then
+	nowPlaying.settings = settings;
+	nowPlaying.frame:ShowWindow(settings.showFrame);
+	
+	if settings.onlyNotification == 1 then
+		nowPlaying.frame:SetDuration(settings.notifyDuration);
+	end
+	
+	nowPlaying["addon"]:RegisterMsg('FPS_UPDATE', 'NOWPLAYING_UPDATE_FRAME');
+	nowPlaying.loaded = true;
+end
