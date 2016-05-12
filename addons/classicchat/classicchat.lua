@@ -1,6 +1,7 @@
 local settings = {
-	TimeStamp = true;		-- show timestamps
-	BoldSender = true;		-- put the text before a message in bold, e.g [AM 00:00] [Chat][Sender]:
+	timeStamp = true;			-- show timestamps
+	boldSender = true;			-- put the text before a message in bold, e.g [AM 00:00] [Chat][Sender]:
+	hideSystemName = true;		-- hide the sender name for system messages
 };
 
 settings.whisperSound = {
@@ -27,9 +28,11 @@ settings.itemColors = setmetatable({
 	"FF4F00", 	-- orange item
 }, {__index = function() return "e1e1e1" end }); -- default, white
 
+
+local classicChat = _G["ADDONS"]["CLASSICCHAT"];
 local myFamilyName = GETMYFAMILYNAME();
 
-function DRAW_CHAT_MSG_HOOKED(groupBoxName, size, startIndex, frameName)
+function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 
 	if startIndex < 0 then
 		return;
@@ -117,20 +120,24 @@ function DRAW_CHAT_MSG_HOOKED(groupBoxName, size, startIndex, frameName)
 		local styleString = string.format("{ol}{#%s}", chatColor);
 		local styleStringFormat = string.format("{ol}{#%s}{ds}", chatColor);
 		
-		if settings.BoldSender ~= true then
+		if settings.boldSender ~= true then
 			styleStringFormat = styleString;
 		end
 		
 		--timestamp
-		if settings.TimeStamp == true then
+		if settings.timeStamp == true then
 			timeString = string.format("[%s] ", clusterInfo:GetTimeStr());
 		end
 		
 		--formatting for different scenarios
 		--[AM 00:00] [System]: msg
-		if messageType == 'System' then		
-			messageText =  string.format("%s%s[%s]:{/}%s %s", styleStringFormat, timeString, messageSender, styleString, messageText);
-		
+		if messageType == 'System' then
+			if settings.hideSystemName == true then
+				messageText =  string.format("%s%s", styleString, messageText);
+			else
+				messageText =  string.format("%s%s[%s]:{/}%s %s", styleStringFormat, timeString, messageSender, styleString, messageText);
+			end
+
 		--[AM 00:00] [Player] whispers: msg
 		elseif messageType == 'Whisper' and messageSender ~= myFamilyName then
 			messageText =  string.format("%s%s[%s] whispers:{/}%s %s", styleStringFormat, timeString, messageSender, styleString, messageText);
@@ -145,13 +152,13 @@ function DRAW_CHAT_MSG_HOOKED(groupBoxName, size, startIndex, frameName)
 		end
 
 		--refresh style after {/} but not {/}{
-		messageText = CLASSICCHAT_INSTERT_TEXT(messageText, "{/}[^{]", "{/}", styleString)
+		messageText = classicChat.instertText(messageText, "{/}[^{]", "{/}", styleString)
 		
 		--refresh style after {/} before {a for consecutive chat links
-		messageText = CLASSICCHAT_INSTERT_TEXT(messageText, "{/}[{][a]", "{/}", styleString)
+		messageText = classicChat.instertText(messageText, "{/}[{][a]", "{/}", styleString)
 		
 		--refresh style after {/} before {nl} for newlines directly after chat link
-		messageText = CLASSICCHAT_INSTERT_TEXT(messageText, "{/}[{][n][l][}]", "{/}", styleString)
+		messageText = classicChat.instertText(messageText, "{/}[{][n][l][}]", "{/}", styleString)
 		
 		--item link colours	
 		for word in messageText:gmatch("{a SLI.-}{#0000FF}{img.-{/}{/}{/}") do 
@@ -180,11 +187,11 @@ function DRAW_CHAT_MSG_HOOKED(groupBoxName, size, startIndex, frameName)
 		
 		repeat
 		if settings.whisperSound.enabled == true and messageType == "Whisper" and messageSender ~= myFamilyName and startIndex ~= 0 then
-			if whisperSoundIsOnCooldown == true then break end
+			if classicChat.isWhisperCooldown == true then break end
 			if settings.whisperSound.requireNewCluster == true and cluster ~= nil then break end
 			imcSound.PlaySoundEvent(settings.whisperSound.sound);
-			whisperSoundIsOnCooldown = true;
-			ReserveScript("whisperSoundIsOnCooldown = false", settings.whisperSound.cooldown);
+			classicChat.isWhisperCooldown = true;
+			ReserveScript("classicChat.isWhisperCooldown = false", settings.whisperSound.cooldown);
 		end
 		until true
 		
@@ -293,7 +300,7 @@ function DRAW_CHAT_MSG_HOOKED(groupBoxName, size, startIndex, frameName)
 
 end
 
-function CLASSICCHAT_INSTERT_TEXT(messageText, pattern, instertAfter, insertString)
+function classicChat.instertText(messageText, pattern, instertAfter, insertString)
 	for word in messageText:gmatch(pattern) do 
 	
 		local messageTextSubstring = string.match(messageText, pattern);
@@ -317,7 +324,7 @@ function CLASSICCHAT_RESIZE_CHAT_CTRL(chatCtrl, label, txt, timeBox)
 	chatCtrl:Resize(chatWidth, label:GetY() + label:GetHeight());
 end
 
-function CHAT_SET_OPACITY_HOOKED(num)
+function CLASSICCHAT_CHAT_SET_OPACITY(num)
 	local chatFrame = ui.GetFrame("chatframe");
 	if chatFrame == nil then
 		return;
@@ -353,7 +360,7 @@ end
 
 -- for debugging purposes
 local lastMessage = '';
-function chatlog(text)
+function classicChat.chatlog(text)
 	if lastMessage == text then
 		return;
 	end
@@ -368,16 +375,16 @@ function chatlog(text)
 	end
 end
 
-whisperSoundIsOnCooldown = false;
+classicChat.isWhisperCooldown = false;
 
-local addon = _G["ADDONS"]["CLASSICCHAT"]["addon"];
-local frame = _G["ADDONS"]["CLASSICCHAT"]["frame"];
+local addon = classicChat["addon"];
+local frame = classicChat["frame"];
 
-if _G["ADDONS"]["CLASSICCHAT"]["loaded"] ~= true then
+if classicChat.loaded ~= true then
 	_G["RESIZE_CHAT_CTRL"] = CLASSICCHAT_RESIZE_CHAT_CTRL;
-	_G["CHAT_SET_OPACITY"] = CHAT_SET_OPACITY_HOOKED;
-	_G["CHAT_SET_FONTSIZE"] = CHAT_SET_FONTSIZE_HOOKED;
-	_G["ADDONS"]["CLASSICCHAT"]["loaded"] = true;
+	_G["CHAT_SET_OPACITY"] = CLASSICCHAT_CHAT_SET_OPACITY;
+	classicChat.loaded = true;
 end
-_G["DRAW_CHAT_MSG"] = DRAW_CHAT_MSG_HOOKED;
-CHAT_SET_OPACITY_HOOKED(-1);
+
+_G["DRAW_CHAT_MSG"] = CLASSICCHAT_DRAW_CHAT_MSG;
+CLASSICCHAT_CHAT_SET_OPACITY(-1);
