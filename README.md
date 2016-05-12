@@ -39,8 +39,13 @@ If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-
 
 Available slash commands:
 
-- /[music/np/nowplaying] - any of these three commands will show a message in chat with the current BGM.
-- /[music/np/nowplaying] [show/hide] - Allows you to show or hide the text above the chat window
+- /np - Shows a chat message with the current bgm.
+- /np [on/off] - Allows you to show or hide the text above the chat window
+- /np chat [show/hide] - Enable/disable chat messages upon track change
+- /np notify [on/off] - Enable/disable notification mode. Notification mode will show the text above the chat frame for a set duration when a new BGM plays, instead of showing this text constantly.
+- /np help - Displays a help dialogue
+ 
+/np can also be used as /music or /nowplaying.
 
 #### removeFPSCounter
 Hide the FPS counter.
