@@ -30,6 +30,7 @@ function NOWPLAYING_UPDATE_FRAME()
 
 			nowPlaying.currentTrack = string.format('Now playing: %s - %s', musicArtist, musicTitle);
 			nowPlaying.frame:ShowWindow(nowPlaying.settings.showFrame);
+
 			if nowPlaying.settings.onlyNotification == 1 then
 				nowPlaying.frame:SetDuration(nowPlaying.settings.notifyDuration);
 			end
@@ -59,6 +60,7 @@ function nowPlaying.processCommand(words)
 		if cmd == 'on' then
 			nowPlaying.settings.chatMessage = 1;
 			cwAPI.util.log("[nowPlaying] Chat messages enabled");
+			nowPlaying.frame.SetDuration(nowPlaying.settings.notifyDuration);
 		elseif cmd == 'off' then
 			nowPlaying.settings.chatMessage = 0;
 			cwAPI.util.log("[nowPlaying] Chat messages disabled");
@@ -92,7 +94,7 @@ function nowPlaying.processCommand(words)
 		msg = msg .. '/np help{nl}';
 		msg = msg .. 'Shows this window.{nl}';
 		msg = msg .. '-----------{nl}';
-		msg = msg .. '/np can also be used as /np or /nowplaying';
+		msg = msg .. '/np can also be used as /music or /nowplaying';
 
 		return ui.MsgBox(msg,"","Nope");
 	end

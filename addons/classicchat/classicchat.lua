@@ -242,10 +242,11 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 			txt:SetGravity(ui.LEFT, ui.TOP);
 			
 			timeCtrl:SetTextByKey("time", clusterInfo:GetTimeStr());
-			
 			timeBox:ShowWindow(0);
+
+			nameText:SetText('{@st61}'..messageSender..'{/}');
 			nameText:ShowWindow(0);
-			
+
 			if clusterInfo:GetMsgType() ~= "System" then
 				chatCtrl:SetEventScript(ui.RBUTTONUP, 'CHAT_RBTN_POPUP');
 				chatCtrl:SetUserValue("TARGET_NAME", clusterInfo:GetCommanderName());
