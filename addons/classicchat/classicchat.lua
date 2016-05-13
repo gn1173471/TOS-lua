@@ -214,7 +214,7 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 		--change default color for other links (party, map)
 		messageText = string.gsub(messageText, "{#0000FF}", string.format("{#%s}", settings.chatColors.Link));
 
-		messageText = classicChat.descape(messageText);
+		messageText = classicChat.unescape(messageText);
 
 		repeat
 		if settings.whisperSound.enabled == true and messageType == "Whisper" and startIndex ~= 0 then
@@ -348,7 +348,7 @@ function classicChat.escape(text)
 	return string.gsub(text, '[%.]','{DOT}');
 end
 
-function classicChat.descape(text)
+function classicChat.unescape(text)
 	text = string.gsub(text,'{PERCENT}', '%%');
 	text = string.gsub(text,'{PLUS}', '%+');
 	text = string.gsub(text,'{MINUS}', '%-');
