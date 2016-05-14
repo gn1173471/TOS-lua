@@ -1,7 +1,7 @@
 local addon = _G["ADDONS"]["CABINETCOMMAS"]["addon"];
 
 function CABINETCOMMAS_ON_CABINET_ITEM_LIST()
-	local frame = ui.GetFrame("market_sell");
+	local frame = ui.GetFrame("market_cabinet");
 	local itemGbox = GET_CHILD(frame, "itemGbox");
 	local itemlist = GET_CHILD(itemGbox, "itemlist", "ui::CDetailListBox");
 	local cnt = itemlist:GetChildCount();
