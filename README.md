@@ -19,7 +19,6 @@ Features:
 - Colored item and recipe links based on rarity.
 - Whisper notification sounds. (Disabled by default)
 - Optional time stamps.
-- Support for opening URLs in your browser from the chat.
 - More
 
 These settings can and should be customized at the top of the lua file. Hex color codes are used.
@@ -61,12 +60,12 @@ Remove the grey dimming background when the full map is opened. [preview](https:
 #### removePetInfo
 Hide pet names and/or HP bars. If you have [cwAPI](https://github.com/fiote/treeofsavior-addons) installed, in-game slash commands will be available, however this is not a dependency for the core functionality of the addon.
 
-Available slash commands:
+Available slash commands, accessed with /companion or /comp:
 
-- /pet -- Information about the addon.
-- /pet name [on/off] - Show/hide your pet name. (Default: on)
-- /pet hp [on/off] - Show/hide your pet HP. (Default: off)
-- /pet other [on/off] - Show/hide other pet names. (Default: off)
+- /comp -- Information about the addon.
+- /comp name [on/off] - Show/hide your pet name. (Default: on)
+- /comp hp [on/off] - Show/hide your pet HP. (Default: off)
+- /comp other [on/off] - Show/hide other pet names. (Default: off)
 
 You can edit the default settings at the top of the file.
 
