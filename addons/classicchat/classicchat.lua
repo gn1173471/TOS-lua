@@ -441,8 +441,6 @@ function classicChat.processUrls(text)
 			finished[pos_start] = true
 			if #url >= minLength then
 				textNew = classicChat.insertlink(textNew, url);
-				classicChat.chatlog(url);
-				print(pos_start, url)
 			end
 		end
 	end
@@ -456,8 +454,6 @@ function classicChat.processUrls(text)
 		then
 			if #url >= minLength then
 				textNew = classicChat.insertlink(textNew, url);
-				classicChat.chatlog(url);
-				print(pos_start, url)
 			end
 		end
 	end
