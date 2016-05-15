@@ -19,6 +19,7 @@ Features:
 - Colored item and recipe links based on rarity.
 - Whisper notification sounds. (Disabled by default)
 - Optional time stamps.
+- Open links from chat in your browser.
 - More
 
 These settings can and should be customized at the top of the lua file. Hex color codes are used.
