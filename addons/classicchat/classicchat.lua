@@ -2,6 +2,7 @@ local settings = {
 	boldSender = true;				-- put the text before a message in bold, e.g [AM 00:00] [Chat][Sender]:
 	channelTag = false;				-- show or hide the channel tag in each message, e.g. [Party], or [Shout]
 	hideSystemName = true;			-- hide the sender name for system messages
+	urlClickWarning = true;			-- warning before opening a web url
 	timeStamp = true;				-- show timestamps
 };
 
@@ -31,6 +32,16 @@ settings.chatColors = {				-- hex color codes
 	Link = "2a58ff"; 				-- default color for party and map links
 };
 
+settings.tagStringColors = {		-- do you want the tag string to be a different colour to the actual message?
+	enabled = false;				-- this part --> [AM 00:00] [Chat][Sender]:
+	Whisper = 'ff40ff';				-- you will need to set your own colours, these defaults are the same as the above colours.
+	Normal = 'f4e65c';
+	Shout = 'ff2223';
+	Party = '2da6ff';
+	Guild = '40fb40';
+	System = 'ff9696';
+};
+
 settings.itemColors = setmetatable({
 	"e1e1e1", 	-- white item
 	"108CFF", 	-- blue item
@@ -52,7 +63,7 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 
 		frameName = "chatframe";
 
-		local popupFrameName = "chatpopup_" ..string.sub(groupBoxName, 10, string.len(groupBoxName))
+		local popupFrameName = "chatpopup_" ..groupBoxName:sub(10, groupBoxName:len())
 		DRAW_CHAT_MSG(groupBoxName, size, startIndex, popupFrameName);
 	end
 
@@ -132,26 +143,33 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 		local chatColor = settings.chatColors[messageType];
 
 		local styleString = string.format("{ol}{#%s}", chatColor);
-		local styleStringFormat = string.format("{ol}{#%s}{ds}", chatColor);
 
-		if settings.boldSender ~= true then
-			styleStringFormat = styleString;
+		local tagStyleString = '';
+
+		if settings.tagStringColors.enabled == true then
+			tagStyleString = string.format("{ol}{#%s}", settings.tagStringColors[messageType]);
+		else
+			tagStyleString = string.format("{ol}{#%s}", chatColor);
+		end
+
+		if settings.boldSender == true then
+			tagStyleString = tagStyleString .. "{ds}";
 		end
 
 		-- channel tag
 		if settings.channelTag == true then
-			local channelTagFormat = string.format("%s%%s%s ", string.sub(settings.formatting.channelTagBrackets,1,1),  string.sub(settings.formatting.channelTagBrackets,2,2));
-			channelTag = string.format(channelTagFormat, messageType);
+			local channelTagFormat = string.format("%s%%s%s ", settings.formatting.channelTagBrackets:sub(1,1),  settings.formatting.channelTagBrackets:sub(2,2));
+			channelTag = channelTagFormat:format(messageType);
 		end
 
 		-- name tag
-		local nameTagFormat = string.format("%s%%s%s", string.sub(settings.formatting.nameTagBrackets,1,1),  string.sub(settings.formatting.nameTagBrackets,2,2));
-		nameTag = string.format(nameTagFormat, messageSender);
+		local nameTagFormat = string.format("%s%%s%s", settings.formatting.nameTagBrackets:sub(1,1),  settings.formatting.nameTagBrackets:sub(2,2));
+		nameTag = nameTagFormat:format(messageSender);
 
 		-- timestamp
 		if settings.timeStamp == true then
-			local timeStampFormat = string.format("%s%%s%s ", string.sub(settings.formatting.timeStampBrackets,1,1),  string.sub(settings.formatting.timeStampBrackets,2,2));
-			timeStamp = string.format(timeStampFormat, clusterInfo:GetTimeStr());
+			local timeStampFormat = string.format("%s%%s%s ", settings.formatting.timeStampBrackets:sub(1,1),  settings.formatting.timeStampBrackets:sub(2,2));
+			timeStamp = timeStampFormat:format(clusterInfo:GetTimeStr());
 		end
 
 
@@ -159,25 +177,38 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 		-- [AM 00:00] [System]: msg
 		if messageType == 'System' then
 			if settings.hideSystemName == true then
-				messageText =  string.format("%s%s%s", styleString, settings.formatting.indentation, messageText);
+				messageText =  string.format("%s%s", styleString, messageText);
 			else
-				messageText =  string.format("%s%s%s%s:{/}%s %s", styleStringFormat, settings.formatting.indentation, timeStamp, nameTag, styleString, messageText);
+				messageText =  string.format("%s%s%s%s:{/}%s %s", tagStyleString, settings.formatting.indentation, timeStamp, nameTag, styleString, messageText);
 			end
 
 		-- [AM 00:00] [Player] whispers: msg
 		elseif messageType == 'Whisper' and messageSender ~= myFamilyName then
-			messageText =  string.format("%s%s%s%s whispers:{/}%s %s", styleStringFormat, settings.formatting.indentation, timeStamp, nameTag, styleString, messageText);
+			messageText =  string.format("%s%s%s%s whispers:{/}%s %s", tagStyleString, settings.formatting.indentation, timeStamp, nameTag, styleString, messageText);
 
 		-- [AM 00:00] To [Player]: msg
 		elseif messageType == 'Whisper' and roomInfo ~= nil then
-			messageText =  string.format("%s%s%sTo %s:{/}%s %s", styleStringFormat, settings.formatting.indentation, timeStamp, memberString, styleString, messageText);
+			messageText =  string.format("%s%s%sTo %s:{/}%s %s", tagStyleString, settings.formatting.indentation, timeStamp, memberString, styleString, messageText);
 
 		-- [AM 00:00] [Chat][Player]: msg
 		else
-			messageText =  string.format("%s%s%s%s%s:{/}%s %s", styleStringFormat, settings.formatting.indentation, timeStamp, channelTag, nameTag, styleString, messageText);
+			messageText =  string.format("%s%s%s%s%s:{/}%s %s", tagStyleString, settings.formatting.indentation, timeStamp, channelTag, nameTag, styleString, messageText);
 		end
 
+
 		messageText = classicChat.escape(messageText);
+		messageText = messageText .. " ";
+
+		-- hyperlinks
+		local link = messageText:match("(https?:.-)[{ ]") or messageText:match("(www.-)[{ ]") or nil;
+		if link ~= nil then
+			local length = 25;
+			if #classicChat.unescape(link) > length then
+				messageText = messageText:gsub(link, string.format("{a SLL %s}{#%s}%s!@#DOT#@!!@#DOT#@!!@#DOT#@!{/}{/}{/}", link, settings.chatColors.Link, classicChat.escape(classicChat.unescape(link):sub(1, length))));
+			else
+				messageText = messageText:gsub(link, string.format("{a SLL %s}{#%s}%s{/}{/}{/}", link, settings.chatColors.Link, link));
+			end
+		end
 
 		-- refresh style after {/} but not {/}{
 		messageText = classicChat.instertText(messageText, "{/}[^{]", "{/}", styleString);
@@ -191,30 +222,32 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 
 		-- item link colours
 		for word in messageText:gmatch("{a SLI.-}{#0000FF}{img.-{/}{/}{/}") do
-			local itemID, itemIcon = string.match(word, "{a SLI .- (.-)}{#0000FF}{img (.-) .-{/}{/}{/}");
+			local itemID, itemIcon = word:match("{a SLI .- (.-)}{#0000FF}{img (.-) .-{/}{/}{/}");
 
 			local messageTextSubstring = itemID .. "}{#0000FF}";
 			local itemObj = CreateIESByID("Item", tonumber(itemID));
 			local itemColor = settings.itemColors[itemObj.ItemGrade];
 
-			if tostring(itemObj.ItemGrade) == "None" then 					--recipes do not hold an itemgrade
-				local recipeGrade = string.match(itemIcon, "misc(%d)"); 	-- e.g icon_item_gloves_misc[1-5]
+			if tostring(itemObj.ItemGrade) == "None" then 			--recipes do not hold an itemgrade
+				local recipeGrade = itemIcon:match("misc(%d)"); 	-- e.g icon_item_gloves_misc[1-5]
 				if recipeGrade ~= nil then
 					itemColor = settings.itemColors[tonumber(recipeGrade)-1];
 				end
 			end
 
-			local messageTextReplace = string.gsub(messageTextSubstring, "0000FF", itemColor);
-			messageText = string.gsub(messageText, messageTextSubstring, messageTextReplace);
+			local messageTextReplace = messageTextSubstring:gsub("0000FF", itemColor);
+			messageText = messageText:gsub(messageTextSubstring, messageTextReplace);
 		end
 
 		--never display black text (had some issues with system msgs coming up black)
-		messageText = string.gsub(messageText, "{#000000}", string.format("{#%s}", chatColor));
+		messageText = messageText:gsub("{#000000}", string.format("{#%s}", chatColor));
 
 		--change default color for other links (party, map)
-		messageText = string.gsub(messageText, "{#0000FF}", string.format("{#%s}", settings.chatColors.Link));
+		messageText = messageText:gsub("{#0000FF}", string.format("{#%s}", settings.chatColors.Link));
+
 
 		messageText = classicChat.unescape(messageText);
+		messageText = messageText:sub(1, #messageText - 1)
 
 		repeat
 		if settings.whisperSound.enabled == true and messageType == "Whisper" and startIndex ~= 0 then
@@ -235,6 +268,14 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 			txt:SetTextByKey("text", messageText);
 
 			local timeBox = GET_CHILD(cluster, "timebox");
+
+			local slflag = messageText:find('a SL')
+			if slflag == nil then
+				label:EnableHitTest(0)
+			else
+				label:EnableHitTest(1)
+			end
+
 			RESIZE_CHAT_CTRL(cluster, label, txt, timeBox)
 
 			if cluster:GetHorzGravity() == ui.RIGHT then
@@ -280,14 +321,13 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 			nameText:SetText('{@st61}'..messageSender..'{/}');
 			nameText:ShowWindow(0);
 
-			if clusterInfo:GetMsgType() ~= "System" then
+			if messageType ~= "System" then
 				chatCtrl:SetEventScript(ui.RBUTTONUP, 'CHAT_RBTN_POPUP');
 				chatCtrl:SetUserValue("TARGET_NAME", clusterInfo:GetCommanderName());
 				chatCtrl:EnableHitTest(1);
 			end
 
-			local slflag = string.find(clusterInfo:GetMsg(),'a SL')
-			label:EnableHitTest(0);
+			local slflag = messageText:find('a SL')
 			if slflag == nil then
 				label:EnableHitTest(0)
 			else
@@ -321,7 +361,7 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 
 	local parentframe = groupBox:GetParent()
 
-	if string.find(parentframe:GetName(),"chatpopup_") == nil then
+	if parentframe:GetName():find("chatpopup_") == nil then
 		if roomID ~= "Default" and groupBox:IsVisible() == 1 then
 			chat.UpdateReadFlag(roomID);
 		end
@@ -334,44 +374,60 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 
 end
 
+function SLL(text, warned)
+	if settings.urlClickWarning == true and warned ~= true then
+		local msgBoxString = "Do you want to open the URL?{nl}"
+		local length = 35;
+		if #text > length then
+			msgBoxString = msgBoxString .. text:sub(1, length) .. "...";
+		else
+			msgBoxString = msgBoxString .. text;
+		end
+		local msgBoxScp = string.format("SLL('%s', true)", text);
+		ui.MsgBox(msgBoxString, msgBoxScp, "None");
+	else
+		os.execute(string.format('start "" "%s"', text));
+	end
+end
+
 
 function classicChat.escape(text)
-	text = string.gsub(text, '[%%]','{PERCENT}');
-	text = string.gsub(text, '[%+]','{PLUS}');
-	text = string.gsub(text, '[%-]','{MINUS}');
-	text = string.gsub(text, '[%*]','{ASTERISK}');
-	text = string.gsub(text, '[%?]','{QMARK}');
-	text = string.gsub(text, '[%[]','{LBRACKET}');
-	text = string.gsub(text, '[%]]','{RBRACKET}');
-	text = string.gsub(text, '[%^]','{CARET}');
-	text = string.gsub(text, '[%$]','{DOLLAR}');
-	return string.gsub(text, '[%.]','{DOT}');
+	text = text:gsub('[%%]','!@#PERCENT#@!');
+	text = text:gsub('[%+]','!@#PLUS#@!');
+	text = text:gsub('[%-]','!@#MINUS#@!');
+	text = text:gsub('[%*]','!@#ASTERISK#@!');
+	text = text:gsub('[%?]','!@#QMARK#@!');
+	text = text:gsub('[%[]','!@#LBRACKET#@!');
+	text = text:gsub('[%]]','!@#RBRACKET#@!');
+	text = text:gsub('[%^]','!@#CARET#@!');
+	text = text:gsub('[%$]','!@#DOLLAR#@!');
+	return text:gsub('[%.]','!@#DOT#@!');
 end
 
 function classicChat.unescape(text)
-	text = string.gsub(text,'{PERCENT}', '%%');
-	text = string.gsub(text,'{PLUS}', '%+');
-	text = string.gsub(text,'{MINUS}', '%-');
-	text = string.gsub(text,'{ASTERISK}', '%*');
-	text = string.gsub(text,'{QMARK}', '%?');
-	text = string.gsub(text,'{LBRACKET}', '%[');
-	text = string.gsub(text,'{RBRACKET}', '%]');
-	text = string.gsub(text,'{CARET}', '%^');
-	text = string.gsub(text,'{DOLLAR}', '%$');
-	return string.gsub(text,'{DOT}', '%.');
+	text = text:gsub('!@#PERCENT#@!', '%%');
+	text = text:gsub('!@#PLUS#@!', '%+');
+	text = text:gsub('!@#MINUS#@!', '%-');
+	text = text:gsub('!@#ASTERISK#@!', '%*');
+	text = text:gsub('!@#QMARK#@!', '%?');
+	text = text:gsub('!@#LBRACKET#@!', '%[');
+	text = text:gsub('!@#RBRACKET#@!', '%]');
+	text = text:gsub('!@#CARET#@!', '%^');
+	text = text:gsub('!@#DOLLAR#@!', '%$');
+	return text:gsub('!@#DOT#@!', '%.');
 end
 
 
 function classicChat.instertText(messageText, pattern, instertAfter, insertString)
 	for word in messageText:gmatch(pattern) do
 
-		local messageTextSubstring = string.match(messageText, pattern);
+		local messageTextSubstring = messageText:match(pattern);
 		if messageTextSubstring == nil then
 			break;
 		end
 
-		local messageTextReplace = string.gsub(messageTextSubstring, instertAfter, "%1" .. insertString);
-		messageText = string.gsub(messageText, messageTextSubstring, messageTextReplace);
+		local messageTextReplace = messageTextSubstring:gsub(instertAfter, "%1" .. insertString);
+		messageText = messageText:gsub(messageTextSubstring, messageTextReplace);
 	end
 	return messageText;
 end
@@ -395,7 +451,7 @@ function CLASSICCHAT_CHAT_SET_OPACITY(num)
 	for  i = 0, count-1 do
 		local child = chatFrame:GetChildByIndex(i);
 		local childName = child:GetName();
-		if string.sub(childName, 1, 9) == "chatgbox_" then
+		if childName:sub(1, 9) == "chatgbox_" then
 			if child:GetClassName() == "groupbox" then
 
 				child = tolua.cast(child, "ui::CGroupBox");
