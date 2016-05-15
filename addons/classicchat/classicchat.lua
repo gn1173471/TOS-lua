@@ -460,22 +460,35 @@ function classicChat.processUrls(text)
 	return textNew;
 end
 
-function classicChat.insertlink(text, url)
+function classicChat.insertlink(text, url, urlDisplay)
 	local maxLength = 28;
 
 	text = classicChat.escape(text);
 	url = classicChat.escape(url);
+	urlDisplay = urlDisplay or url;
 
 	local urlHttp = url;
 	if urlHttp:match("https?://") == nil then
 		urlHttp = "http://" .. urlHttp;
 	end
 
-	if #url >= maxLength then
-		text = text:gsub(url, string.format("{a SLL %s}{#%s}%s!@#DOT#@!!@#DOT#@!!@#DOT#@!{/}{/}{/}", urlHttp, settings.chatColors.Link, classicChat.escape(classicChat.unescape(url):sub(1, maxLength-3))));
-	else
-		text = text:gsub(url, string.format("{a SLL %s}{#%s}%s{/}{/}{/}", urlHttp, settings.chatColors.Link, url));
+	if urlDisplay == classicChat.escape("https://classich.at") then
+		urlDisplay = "Classic Chat";
+		urlHttp = classicChat.escape("https://github.com/Miei/TOS-lua/");
 	end
+
+	if urlDisplay ~= url then
+		maxLength = 100;
+	end
+
+	local linkFormat = "{a SLL %s}{#%s}%s{/}{/}{/}";
+
+	if #classicChat.unescape(urlDisplay) >= maxLength then
+		linkFormat = "{a SLL %s}{#%s}%s!@#DOT#@!!@#DOT#@!!@#DOT#@!{/}{/}{/}";
+		urlDisplay = classicChat.escape(classicChat.unescape(urlDisplay):sub(1, maxLength-3));
+	end
+
+	text = text:gsub(url, linkFormat:format(urlHttp, settings.chatColors.Link, urlDisplay));
 
 	return classicChat.unescape(text);
 end
@@ -589,6 +602,13 @@ local frame = classicChat["frame"];
 if classicChat.loaded ~= true then
 	_G["RESIZE_CHAT_CTRL"] = CLASSICCHAT_RESIZE_CHAT_CTRL;
 	_G["CHAT_SET_OPACITY"] = CLASSICCHAT_CHAT_SET_OPACITY;
+
+	if settings.urlMatching == true then
+		CHAT_SYSTEM("https://classich.at loaded!");
+	else
+		CHAT_SYSTEM("Classic Chat loaded!");
+	end
+
 	classicChat.loaded = true;
 end
 
