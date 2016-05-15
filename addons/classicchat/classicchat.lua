@@ -199,9 +199,7 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 		messageText = classicChat.escape(messageText);
 		messageText = messageText .. " ";
 
-		-- hyperlinks
-		local link = messageText:match("(https?:.-)[{ ]") or messageText:match("(www.-)[{ ]") or nil;
-		if link ~= nil then
+		for link in messageText:gmatch("(https?:.-)[{ ]") do
 			local length = 25;
 			if #classicChat.unescape(link) > length then
 				messageText = messageText:gsub(link, string.format("{a SLL %s}{#%s}%s!@#DOT#@!!@#DOT#@!!@#DOT#@!{/}{/}{/}", link, settings.chatColors.Link, classicChat.escape(classicChat.unescape(link):sub(1, length))));
