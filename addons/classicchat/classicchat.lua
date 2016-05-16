@@ -379,7 +379,7 @@ function SLL(text, warned)
 		local msgBoxScp = string.format("SLL('%s', true)", text);
 		ui.MsgBox(msgBoxString, msgBoxScp, "None");
 	else
-		os.execute(string.format('start "" "%s"', text));
+		login.OpenURL(text);
 	end
 end
 
