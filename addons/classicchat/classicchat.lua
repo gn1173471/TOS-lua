@@ -579,12 +579,13 @@ local frame = classicChat["frame"];
 if classicChat.loaded ~= true then
 	_G["RESIZE_CHAT_CTRL"] = CLASSICCHAT_RESIZE_CHAT_CTRL;
 	_G["CHAT_SET_OPACITY"] = CLASSICCHAT_CHAT_SET_OPACITY;
-
+	local initmsg = '';
 	if settings.urlMatching == true then
-		CHAT_SYSTEM("https://classich.at loaded!");
+		initmsg = "https://classich.at loaded!";
 	else
-		CHAT_SYSTEM("Classic Chat loaded!");
+		initmsg = "Classic Chat loaded!";
 	end
+	ReserveScript(string.format('CHAT_SYSTEM("%s");', initmsg), 0.5)
 
 	classicChat.loaded = true;
 end
