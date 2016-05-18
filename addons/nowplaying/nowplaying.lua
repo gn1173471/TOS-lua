@@ -31,8 +31,11 @@ function NOWPLAYING_UPDATE_FRAME()
 			nowPlaying.currentTrack = string.format('Now playing: %s - %s', musicArtist, musicTitle);
 			nowPlaying.frame:ShowWindow(nowPlaying.settings.showFrame);
 
-			if nowPlaying.settings.onlyNotification == 1 then
-				nowPlaying.frame:SetDuration(nowPlaying.settings.notifyDuration);
+			if nowPlaying.settings.showFrame == 1 then
+				nowPlaying.frame:ShowWindow(nowPlaying.settings.showFrame);
+				if nowPlaying.settings.onlyNotification == 1 then
+					nowPlaying.frame:SetDuration(nowPlaying.settings.notifyDuration);
+				end
 			end
 
 			if nowPlaying.settings.chatMessage == 1 then
