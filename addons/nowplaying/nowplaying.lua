@@ -13,6 +13,8 @@ nowPlaying.textBox = GET_CHILD(nowPlaying.frame, "textbox");
 function NOWPLAYING_UPDATE_FRAME()
 	local nowPlaying = _G["ADDONS"]["NOWPLAYING"];
 	if nowPlaying.musicInst ~= imcSound.GetPlayingMusicInst() then
+		if imcSound.GetPlayingMusicInst() == nil then return end
+		if nowPlaying.settings.showFrame ~= 1 then return end
 		nowPlaying.musicInst = imcSound.GetPlayingMusicInst();
 		local musicFileName = nowPlaying.musicInst:GetFileName();
 		for word in string.gmatch(musicFileName, "bgm\(.-)mp3") do
@@ -31,11 +33,9 @@ function NOWPLAYING_UPDATE_FRAME()
 			nowPlaying.currentTrack = string.format('Now playing: %s - %s', musicArtist, musicTitle);
 			nowPlaying.frame:ShowWindow(nowPlaying.settings.showFrame);
 
-			if nowPlaying.settings.showFrame == 1 then
-				nowPlaying.frame:ShowWindow(nowPlaying.settings.showFrame);
-				if nowPlaying.settings.onlyNotification == 1 then
-					nowPlaying.frame:SetDuration(nowPlaying.settings.notifyDuration);
-				end
+			nowPlaying.frame:ShowWindow(1);
+			if nowPlaying.settings.onlyNotification == 1 then
+				nowPlaying.frame:SetDuration(nowPlaying.settings.notifyDuration);
 			end
 
 			if nowPlaying.settings.chatMessage == 1 then
@@ -51,11 +51,11 @@ end
 function nowPlaying.processCommand(words)
 	local cmd = table.remove(words,1);
 	if cmd == 'off' then
-		nowPlaying.showFrame = 0;
+		nowPlaying.settings.showFrame = 0;
 		nowPlaying.frame:ShowWindow(0);
 		return;
 	elseif cmd == 'on' then
-		nowPlaying.showFrame = 1;
+		nowPlaying.settings.showFrame = 1;
 		nowPlaying.frame:ShowWindow(1);
 		return;
 	elseif cmd == 'chat' then
@@ -130,7 +130,7 @@ else
 		cwAPI.commands.register('/nowplaying',nowPlaying.processCommand);
 		cwAPI.commands.register('/np',nowPlaying.processCommand);
 		cwAPI.commands.register('/music',nowPlaying.processCommand);
-		cwAPI.util.log('[nowPlaying:help] /music [show/hide]');
+		cwAPI.util.log('[nowPlaying:help] /np [on/off]');
 		return true;
 	end
 end
