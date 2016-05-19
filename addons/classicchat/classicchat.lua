@@ -201,7 +201,6 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 		end
 
 		messageText = classicChat.escape(messageText);
-		messageText = messageText .. " ";
 
 		-- refresh style after {/} but not {/}{
 		messageText = classicChat.instertText(messageText, "{/}[^{]", "{/}", styleString);
@@ -240,7 +239,6 @@ function CLASSICCHAT_DRAW_CHAT_MSG(groupBoxName, size, startIndex, frameName)
 
 
 		messageText = classicChat.unescape(messageText);
-		messageText = messageText:sub(1, #messageText - 1)
 
 		repeat
 		if settings.whisperSound.enabled == true and messageType == "Whisper" and startIndex ~= 0 then
@@ -576,19 +574,19 @@ classicChat.isWhisperCooldown = false;
 local addon = classicChat["addon"];
 local frame = classicChat["frame"];
 
+_G["DRAW_CHAT_MSG"] = CLASSICCHAT_DRAW_CHAT_MSG;
+
 if classicChat.loaded ~= true then
 	_G["RESIZE_CHAT_CTRL"] = CLASSICCHAT_RESIZE_CHAT_CTRL;
 	_G["CHAT_SET_OPACITY"] = CLASSICCHAT_CHAT_SET_OPACITY;
-	local initmsg = '';
+
 	if settings.urlMatching == true then
-		initmsg = "https://classich.at loaded!";
+		CHAT_SYSTEM("https://classich.at loaded!");
 	else
-		initmsg = "Classic Chat loaded!";
+		CHAT_SYSTEM("Classic Chat loaded!");
 	end
-	ReserveScript(string.format('CHAT_SYSTEM("%s");', initmsg), 0.5)
 
 	classicChat.loaded = true;
 end
 
-_G["DRAW_CHAT_MSG"] = CLASSICCHAT_DRAW_CHAT_MSG;
 CLASSICCHAT_CHAT_SET_OPACITY(-1);
