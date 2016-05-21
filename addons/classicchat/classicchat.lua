@@ -24,13 +24,13 @@ settings.formatting = {				-- brackets to use for each tag
 }
 
 settings.chatColors = {				-- hex color codes
-	Whisper = 'ff40ff';
-	Normal = 'f4e65c';
-	Shout = 'ff2223';
-	Party = '2da6ff';
-	Guild = '40fb40';
-	System = 'ff9696';
-	Link = "2a58ff"; 				-- default color for party and map links
+	Whisper = 'FF0000';
+	Normal = 'FFFFFF';
+	Shout = 'FFFF00';
+	Party = '008000';
+	Guild = '00FFFF';
+	System = '808080';
+	Link = "800080"; 				-- default color for party and map links
 };
 
 settings.tagStringColors = {		-- do you want the tag string to be a different colour to the actual message?
